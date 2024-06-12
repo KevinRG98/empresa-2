@@ -9,12 +9,10 @@
         @if( true || Auth::check() )
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item"><a class ="nav-link" href="{{route('home')}}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('servicios') }}">Servicios</a></li>
-                    <li class="nav-item"><a class ="nav-link" href="{{route('proyectos')}}">Proyectos</a></li>
-                    <li class="nav-item"><a class ="nav-link" href="{{route('clientes')}}">Clientes</a></li>
-                    <li class="nav-item"><a class ="nav-link" href="{{route('blog')}}">Blog</a></li>
+                    <li class="nav-item"><a class ="nav-link" href="{{route('home')}}">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('personas') }}">Personas</a></li>
                     <li class="nav-item"><a class ="nav-link" href="{{route('contacto')}}">Contacto</a></li>
+                    
                 </ul>
             </div>
         @endif
