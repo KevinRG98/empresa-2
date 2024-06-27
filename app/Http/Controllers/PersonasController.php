@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Persona;
-
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\CreatePersonaRequest;
 class PersonasController extends Controller
 {
     /**
@@ -12,57 +14,88 @@ class PersonasController extends Controller
      */
     public function index()
     {
-        $personas = Persona::get();
+        $personas = Persona::all();
+        $personas = Persona::paginate(2);
         return view('personas',compact('personas'));
-
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show($id) 
     {
-        //
-    }
+        //return Persona::find($nPerCodigo);
+        //return view('personas.show', compact('persona'));
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $nPerCodigo)
-    {
+        $persona = Persona::find($id)??new Persona();
         return view('show', [
-            'persona' => Persona::where('nPerCodigo', $nPerCodigo)->first()]);
-    }
+            'persona' => $persona
+        ]);
+    } 
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+     public function create(){
+        $token = Str::random(32);
+        return view('create', compact('token'));
+     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+     public function store(CreatePersonaRequest $request)
+     {
+         // Validación de datos (puedes personalizar esto según tus necesidades)
+         date_default_timezone_set('America/Lima');
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+         $token = Str::random(32);
+         $persona = new Persona();
+         $persona->nPerCodigo = $request->input('nPerCodigo');
+         $persona->cPerApellido = $request->input('cPerApellido');
+         $persona->cPerNombre = $request->input('cPerNombre');
+         $persona->cPerDireccion = $request->input('cPerDireccion');
+         $persona->cPerAFecNac = $request->input('cPerAFecNac');
+         $persona->cPerEdad = $request->input('cPerEdad');
+         $persona->cPerSexo = $request->input('cPerSexo');
+         $persona->cPerSueldo = $request->input('cPerSueldo');
+         $persona->cPerRnd = $request->input('cPerRnd');
+         $persona->cPerEstado = $request->input('cPerEstado');
+         $persona->remenber_toker = $token;
+
+         $persona->save();
+
+        return redirect()->route('personas')->with('success', 'Nuevo Ingreso creado exitosamente.');
+
+} 
+
+
+public function edit(Persona $id)
+{
+
+            return view('edit',[
+                'persona'=> $id]);
+
+
     }
+    public function update(CreatePersonaRequest $request, $id)
+    {   
+        date_default_timezone_set('America/Lima');
+        $persona = Persona::findOrFail($id);
+
+        // Actualizar los datos del formulario
+        $persona->nPerCodigo = $request->input('nPerCodigo');
+        $persona->cPerApellido = $request->input('cPerApellido');
+        $persona->cPerNombre = $request->input('cPerNombre');
+        $persona->cPerDireccion = $request->input('cPerDireccion');
+        $persona->cPerAFecNac = $request->input('cPerAFecNac');
+        $persona->cPerEdad = $request->input('cPerEdad');
+        $persona->cPerSexo = $request->input('cPerSexo');
+        $persona->cPerSueldo = $request->input('cPerSueldo');
+        $persona->cPerRnd = $request->input('cPerRnd');
+        $persona->cPerEstado = $request->input('cPerEstado');
+        $persona->remenber_toker = $request->input('remenber_toker');
+        // Actualiza más campos según sea necesario
+        $persona->save();
+
+
+
+        return redirect()->route('personas')->with('success', 'Persona creada exitosamente.');
+    }
+    public function destroy(Persona $persona) {
+        $persona->delete();
+        return redirect()->route('personas');
+
+   }
 }
